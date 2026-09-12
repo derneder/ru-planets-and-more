@@ -70,9 +70,12 @@ jobs:
             echo '::error::Секрет FACTORIO_API_KEY не задан в окружении portal'; exit 1; }
           python tools/publish.py --${{ inputs.what || 'all' }} --yes
 
+      # Каждый тег — отдельный релиз со своим архивом и своей записью
+      # из changelog. Старые релизы остаются на месте: версии не перетираются.
       - name: GitHub Release с архивом
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ steps.info.outputs.version }}
-          files: dist/*.zip
+          body_path: dist/portal-fields/changelog-latest.md
+          files: dist/ru-planets-and-more_${{ steps.info.outputs.version }}.zip

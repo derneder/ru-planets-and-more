@@ -231,6 +231,7 @@ def main(argv):
     write(os.path.join(fields, 'description.md'), description + '\n')
     write(os.path.join(fields, 'faq.md'), data['faq'].rstrip() + '\n')
     write(os.path.join(fields, 'source_url.txt'), data['source_url'].strip() + '\n')
+    write(os.path.join(fields, 'changelog-latest.md'), chg_body + '\n')
 
     print('Карточка портала: %s' % release_card)
     print('Справочник обновлён: %s' % os.path.relpath(FULL, ROOT))
