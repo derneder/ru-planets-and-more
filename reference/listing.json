@@ -1,0 +1,225 @@
+{
+  "_comment": "Источник данных для карточки портала. tools/listing.py собирает из этого файла и reference/PORTAL-LISTING.template.md готовый текст. Каждый файл из mod/locale/ru/ обязан быть упомянут ровно один раз — иначе сборка падает.",
+  "_comment_summary": "Поле Summary на портале: короткая врезка под названием, лимит 500 символов, проверяется при сборке. {{MOD_COUNT}} и {{MOD_WORD}} подставляются.",
+  "summary": "Русская локализация {{MOD_COUNT}} {{MOD_WORD}} одним пакетом: Planetaris (Ариг, Хайарион, Теллус, Красители), Eneas, Dea Dia System, Exotic Space Industries, Abacayba, Lignumis, Carna, Igrys, Арракис, Vesta, Эримос Прайм, Сфера Дайсона, Factorio Plus, Церис, Мулуна, Мошайн и другие. Сами моды не изменяются: пакет кладёт свои locale/ru поверх них через необязательные зависимости. Мода нет — ничего не ломается, локализация просто не применится.",
+  "faq": "### Мод включён, а текст всё равно английский\n\nПроверьте, что в настройках Factorio выбран русский язык интерфейса, и что\nвключены оба мода — и оригинальный, и этот пакет. Перевод накладывается\nповерх мода, поэтому сам мод должен быть установлен.\n\n### Перевод затрёт работу автора мода?\n\nНет. Там, где перевод уже есть, добавляются только недостающие строки.\nСтрока перекрывается лишь тогда, когда при сверке с английским оригиналом\nнашлась ошибка — и каждый такой случай помечен в файлах комментарием\n«ИСПРАВЛЕНИЕ» с объяснением, что и почему изменено.\n\n### Мод обновился, появились новые непереведённые строки\n\nНапишите в Discussion, добавлю. Проще всего приложить `locale/en/*.cfg`\nиз архива обновившегося мода — без английского оригинала сверка невозможна.\n\n### Почему зависимости необязательные\n\nЧтобы пакет не тянул за собой два десятка модов. Необязательная зависимость\n(`? modname`) нужна только для порядка загрузки: без неё наши строки могут\nне успеть перекрыть оригинальные.\n\n### Нашёл неточность, неверный род или падеж\n\nПишите в Discussion — поправлю. Названия модов, которых здесь нет, но которые\nиз этой же связки, тоже предлагайте.",
+  "groups": {
+    "full": [
+      {
+        "name": "Eneas",
+        "note": "предметы, технологии, все страницы Информатрона и вся сюжетная линия: воспоминания и реплики при исследовании технологий",
+        "files": [
+          "moon-eneas.cfg",
+          "moon-eneas-dialogue.cfg",
+          "moon-eneas-informatron.cfg"
+        ]
+      },
+      {
+        "name": "Abacayba, Moon of Nauvis",
+        "files": [
+          "abacayba.cfg"
+        ]
+      },
+      {
+        "name": "Dea Dia System",
+        "files": [
+          "dea-dia-system.cfg"
+        ]
+      },
+      {
+        "name": "Planetaris: Красители",
+        "files": [
+          "planetaris-dyes.cfg"
+        ]
+      },
+      {
+        "name": "Exotic Space Industries",
+        "note": "целиком: предметы, технологии, рецепты, интерфейс и внутренняя энциклопедия",
+        "files": [
+          "exotic-space-industries.cfg",
+          "exotic-space-industries-emt.cfg",
+          "exotic-space-industries-fueler.cfg"
+        ]
+      },
+      {
+        "name": "Carna APS",
+        "files": [
+          "carna-aps.cfg"
+        ]
+      },
+      {
+        "name": "EON: Fulgora Discovered",
+        "files": [
+          "eon-fulgora-discovered.cfg"
+        ]
+      },
+      {
+        "name": "Canal Excavator",
+        "files": [
+          "canal-excavator.cfg"
+        ]
+      },
+      {
+        "name": "Robocharger Updated",
+        "files": [
+          "robocharger-updated.cfg"
+        ]
+      },
+      {
+        "name": "Far Reach",
+        "files": [
+          "far-reach.cfg"
+        ]
+      },
+      {
+        "name": "Queue To Front (Limited)",
+        "files": [
+          "queue-to-front-limited.cfg"
+        ]
+      },
+      {
+        "name": "Lamp Post",
+        "files": [
+          "lamp-post.cfg"
+        ]
+      },
+      {
+        "name": "Planet Erimos Prime",
+        "note": "весь сюжетный режим: пять миссий, терминал, правила мода",
+        "files": [
+          "planet-erimos-prime.cfg"
+        ]
+      }
+    ],
+    "partial": [
+      {
+        "name": "Planetaris: Ариг",
+        "files": [
+          "planetaris-arig.cfg"
+        ]
+      },
+      {
+        "name": "Planetaris: Хайарион",
+        "note": "синхронизирован с версией 1.3.10 мода",
+        "files": [
+          "planetaris-hyarion.cfg"
+        ]
+      },
+      {
+        "name": "Planetaris: Теллус",
+        "note": "в том числе блок консервации предметов",
+        "files": [
+          "planetaris-tellus.cfg"
+        ]
+      },
+      {
+        "name": "Lignumis",
+        "note": "все подсказки и настройки",
+        "files": [
+          "lignumis.cfg"
+        ]
+      },
+      {
+        "name": "Carna",
+        "files": [
+          "carna.cfg"
+        ]
+      },
+      {
+        "name": "Igrys",
+        "files": [
+          "igrys.cfg"
+        ]
+      },
+      {
+        "name": "Арракис",
+        "files": [
+          "planet-arrakis.cfg"
+        ]
+      },
+      {
+        "name": "Ледяные Кусаки",
+        "note": "Cold_biters",
+        "files": [
+          "cold-biters.cfg"
+        ]
+      },
+      {
+        "name": "Vesta",
+        "files": [
+          "skewer-planet-vesta.cfg"
+        ]
+      },
+      {
+        "name": "Factorio Plus",
+        "files": [
+          "factorioplus.cfg"
+        ]
+      },
+      {
+        "name": "SLP — Dyson Sphere Reworked",
+        "note": "перевод автора полный, добавлены только исправления",
+        "files": [
+          "slp-dyson-sphere-reworked.cfg"
+        ]
+      }
+    ],
+    "nameonly": [
+      {
+        "name": "Церис, луна Фульгоры",
+        "files": [
+          "cerys-moon-of-fulgora.cfg"
+        ]
+      },
+      {
+        "name": "Мулуна, луна Наувиса",
+        "files": [
+          "planet-muluna.cfg"
+        ]
+      },
+      {
+        "name": "Мошайн",
+        "files": [
+          "moshine.cfg"
+        ]
+      },
+      {
+        "name": "Кастра Прайм",
+        "files": [
+          "castra-prime.cfg"
+        ]
+      },
+      {
+        "name": "Тенебрис Прайм",
+        "files": [
+          "tenebris-prime.cfg"
+        ]
+      },
+      {
+        "name": "Планета Линокс",
+        "files": [
+          "linox.cfg"
+        ]
+      },
+      {
+        "name": "Терра Палус",
+        "files": [
+          "terrapalus.cfg"
+        ]
+      }
+    ]
+  },
+  "releases": [
+    "**1.0.0** — первый релиз: Planetaris (Ариг, Хайарион, Теллус, Красители), Dea Dia System.",
+    "**1.1.0** — Хайарион синхронизирован с версией мода 1.3.10; добавлены Cold_biters и Robocharger Updated.",
+    "**1.3.0** — исправлены ключи `[mod-name]`: названия модов наконец стали отображаться на русском в списке модов.",
+    "**1.4.2** — единый префикс «○» у планетных модов, как у Corrundum, Paracelsin, Rubia и Secretas.",
+    "**1.5.2** — пакет переименован в `ru-planets-and-more` (до первой публикации, пока смена внутреннего имени ещё безопасна).",
+    "**1.6.0** — Eneas целиком: локализация, Информатрон и все диалоги.",
+    "**1.7.0** — Abacayba, Carna APS, EON: Fulgora Discovered и Exotic Space Industries с нуля; дополнены Lignumis, Carna, Igrys, Арракис.",
+    "**1.8.0** — Exotic Space Industries переведён полностью (1668 строк).",
+    "**1.9.2** — сплошная сверка против исходников всех установленных модов; сведены расхождения между Аригом и Хайарионом.",
+    "**1.10.0** — Planet Erimos Prime с нуля; исправления в SLP - Dyson Sphere Reworked.",
+    "**1.11.0** — Ариг и Теллус догнаны до текущих версий модов: 78 строк, которых не было ни у авторов, ни у нас."
+  ]
+}

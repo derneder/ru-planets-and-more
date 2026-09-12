@@ -1,0 +1,49 @@
+name: Проверка пакета
+
+# Гоняем на каждый пуш и пул-реквест. Ничего не публикует — только проверяет,
+# что пакет собирается и что в репозитории нет расхождений.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Целостность локализации
+        run: python tools/check.py
+
+      - name: Карточка портала сходится с содержимым
+        run: python tools/listing.py --check
+
+      - name: Сборка архива
+        run: python tools/build.py
+
+      # build.py раскладывает dependencies по алфавиту прямо в info.json.
+      # Если после сборки файл изменился — значит, в репозиторий закоммичен
+      # неотсортированный список. Чиним локально, а не молча в CI.
+      - name: Зависимости закоммичены отсортированными
+        run: |
+          if ! git diff --quiet -- mod/info.json; then
+            echo '::error file=mod/info.json::Список dependencies не отсортирован.'
+            echo 'Запустите локально: python tools/build.py — и закоммитьте mod/info.json'
+            git --no-pager diff -- mod/info.json
+            exit 1
+          fi
+
+      - name: Собранный архив как артефакт
+        uses: actions/upload-artifact@v4
+        with:
+          name: mod-zip
+          path: |
+            dist/*.zip
+            dist/PORTAL-*.md
+          if-no-files-found: error

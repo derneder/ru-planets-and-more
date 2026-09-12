@@ -1,0 +1,78 @@
+name: Релиз на mods.factorio.com
+
+# Два способа запустить:
+#
+#   git tag v1.11.0 && git push origin v1.11.0    — тег должен совпасть
+#                                                   с версией в mod/info.json
+#   вкладка Actions -> Релиз -> Run workflow      — с выбором, что отправлять
+#
+# Ключ портала лежит в секрете окружения portal: FACTORIO_API_KEY
+# (Settings -> Environments -> portal -> Environment secrets). Права нужны обе:
+# «ModPortal: Upload Mods» и «ModPortal: Edit Mods».
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      what:
+        description: Что отправлять на портал
+        type: choice
+        default: all
+        options: [all, details, release, dry-run]
+
+concurrency: publish-${{ github.ref }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: portal
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Версия из info.json
+        id: info
+        run: |
+          version=$(python -c "import json;print(json.load(open('mod/info.json'))['version'])")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Версия пакета: $version"
+
+      # Расхождение тега и info.json — самая обидная ошибка релиза: архив
+      # уедет под одним номером, а тег останется на другом.
+      - name: Тег совпадает с версией
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF#refs/tags/v}"
+          if [ "$tag" != "${{ steps.info.outputs.version }}" ]; then
+            echo "::error::Тег v$tag не совпадает с версией ${{ steps.info.outputs.version }} в mod/info.json"
+            exit 1
+          fi
+
+      - name: Проверка и сборка
+        run: |
+          python tools/check.py
+          python tools/build.py
+
+      - name: Что уйдёт на портал
+        run: python tools/publish.py
+
+      - name: Отправка на портал
+        if: inputs.what != 'dry-run'
+        env:
+          FACTORIO_API_KEY: ${{ secrets.FACTORIO_API_KEY }}
+        run: |
+          test -n "$FACTORIO_API_KEY" || {
+            echo '::error::Секрет FACTORIO_API_KEY не задан в окружении portal'; exit 1; }
+          python tools/publish.py --${{ inputs.what || 'all' }} --yes
+
+      - name: GitHub Release с архивом
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.info.outputs.version }}
+          files: dist/*.zip
