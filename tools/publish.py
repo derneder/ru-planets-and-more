@@ -28,6 +28,7 @@ FACTORIO_API_KEY, а если её нет — из файла ~/.factorio-api-ke
     dist/portal-fields/summary.txt      -> поле summary
     dist/portal-fields/description.md   -> поле description
     dist/portal-fields/faq.md           -> поле faq
+    dist/portal-fields/source_url.txt   -> поле source_url
     dist/ru-planets-and-more_<v>.zip    -> новый релиз
 
 Changelog отдельным полем не передаётся: портал строит вкладку Changelog сам
@@ -145,6 +146,8 @@ def main(argv):
             'description': read(require(os.path.join(FIELDS, 'description.md'),
                                         'не собрано описание')),
             'faq': read(require(os.path.join(FIELDS, 'faq.md'), 'не собран FAQ')),
+            'source_url': read(require(os.path.join(FIELDS, 'source_url.txt'),
+                                       'не собрана ссылка на исходники')).strip(),
         }
         print('edit_details -> %s' % EDIT_DETAILS)
         for field, text in payload.items():

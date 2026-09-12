@@ -136,7 +136,7 @@ def validate(data, info):
         problems.append('в "releases" нет вехи ни про %s, ни про ветку %sx '
                         '— добавьте строку' % (version, minor))
 
-    for field in ('summary', 'faq'):
+    for field in ('summary', 'faq', 'source_url'):
         if not data.get(field, '').strip():
             problems.append('в listing.json пустое поле "%s"' % field)
 
@@ -230,6 +230,7 @@ def main(argv):
     write(os.path.join(fields, 'summary.txt'), subs['SUMMARY'] + '\n')
     write(os.path.join(fields, 'description.md'), description + '\n')
     write(os.path.join(fields, 'faq.md'), data['faq'].rstrip() + '\n')
+    write(os.path.join(fields, 'source_url.txt'), data['source_url'].strip() + '\n')
 
     print('Карточка портала: %s' % release_card)
     print('Справочник обновлён: %s' % os.path.relpath(FULL, ROOT))

@@ -21,6 +21,17 @@ python3 tools/check.py
 
 ## Типовые задачи
 
+**Собрать исходники чужих модов для сверки**
+
+```bash
+python3 tools/sources.py              # из установленных модов + отчёт
+python3 tools/sources.py --download   # доскачать недостающие с портала
+```
+
+Кладёт `locale/en` и `locale/ru` каждого мода в `../original_mods` — вне
+репозитория. Для `--download` нужен `service-token` из `player-data.json`
+Factorio: скрипт читает его сам и никуда не печатает.
+
 **Добавить новый мод в пакет**
 
 1. Положите `locale/en/*.cfg` мода (и `locale/ru/*.cfg`, если перевод уже есть)
@@ -51,7 +62,7 @@ python3 tools/build.py
 | Путь | Что это |
 |---|---|
 | `mod/` | Сам мод, то что уходит в архив |
-| `tools/` | Скрипты: gaps, audit, check, listing, build, publish |
+| `tools/` | Скрипты: sources, gaps, audit, check, listing, build, publish |
 | `source-en/` | Оригинальные файлы модов для сверки |
 | `docs/GLOSSARY.md` | Устоявшиеся переводы терминов |
 | `docs/PITFALLS.md` | Грабли, на которые уже наступали |
