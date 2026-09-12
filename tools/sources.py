@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 """Сбор исходников чужих модов в ../original_mods для построчной сверки.
 
-    python3 tools/sources.py              # из установленных модов + отчёт
-    python3 tools/sources.py --download   # доскачать недостающие с портала
-    python3 tools/sources.py --list       # только отчёт, ничего не трогать
+    python3 tools/sources.py          # собрать из установленных модов + отчёт
+    python3 tools/sources.py --list   # только отчёт, ничего не трогать
 
 Берётся ТОЛЬКО папка locale/, и только языки en и ru: графика и звук чужих
 модов нам не нужны, а весят они сотни мегабайт. Папка ../original_mods лежит
 вне репозитория и в git не попадает — это тексты авторов соответствующих
 модов, а не наши.
 
-Про --download. Портал отдаёт архивы только авторизованным: нужны
-service-username и service-token из player-data.json Factorio. Скрипт читает
-их сам и никуда не печатает. Если файла нет или в нём нет токена — запустите
-игру и войдите в аккаунт, токен появится. Скачивать можно и вручную через
-саму игру: Моды -> Установить, тогда хватит запуска без --download.
+Скачивать архивы с портала скриптом НЕЛЬЗЯ: страницы загрузки стоят за
+Cloudflare, который отдаёт 403 (код 1010) любому клиенту, кроме браузера
+и самой игры. Дело не в авторизации — запрос не доходит до портала.
+
+Поэтому недостающие моды ставятся через игру: Моды -> Установить, найти
+по имени, поставить (включать не обязательно). Архив ляжет в папку модов,
+и следующий запуск этого скрипта подхватит из него locale/. Второй путь —
+нажать Download на странице мода в браузере и положить zip в папку модов
+вручную.
 """
 import argparse
 import glob
@@ -32,7 +35,6 @@ OUT = os.path.abspath(os.path.join(ROOT, os.pardir, 'original_mods'))
 APPDATA = os.environ.get('APPDATA') or os.path.expanduser('~')
 FACTORIO = os.path.join(APPDATA, 'Factorio')
 MODS_DIR = os.path.join(FACTORIO, 'mods')
-PLAYER_DATA = os.path.join(FACTORIO, 'player-data.json')
 
 API = 'https://mods.factorio.com/api/mods/%s'
 LANGS = ('en', 'ru')
@@ -88,56 +90,8 @@ def from_installed():
     return total_mods, total_files
 
 
-def credentials():
-    """service-username и service-token из player-data.json. Не печатаются."""
-    if not os.path.exists(PLAYER_DATA):
-        return None, None
-    try:
-        data = json.load(io.open(PLAYER_DATA, encoding='utf-8'))
-    except Exception:
-        return None, None
-    return data.get('service-username'), data.get('service-token')
-
-
-def download(names):
-    import urllib.parse
-    import urllib.request
-
-    user, token = credentials()
-    if not user or not token:
-        print('\nВ %s нет service-token — портал архивы не отдаст.' % PLAYER_DATA)
-        print('Запустите Factorio и войдите в аккаунт, либо поставьте моды '
-              'через саму игру (Моды -> Установить).')
-        return 1
-
-    for name in names:
-        try:
-            meta = json.load(urllib.request.urlopen(API % urllib.parse.quote(name)))
-            rel = meta['releases'][-1]
-        except Exception as exc:
-            print('  %-30s портал не ответил: %s' % (name, exc))
-            continue
-        stem = os.path.splitext(rel['file_name'])[0]
-        url = ('https://mods.factorio.com' + rel['download_url'] + '?' +
-               urllib.parse.urlencode({'username': user, 'token': token}))
-        tmp = os.path.join(OUT, stem + '.part')
-        os.makedirs(OUT, exist_ok=True)
-        try:
-            with urllib.request.urlopen(url) as resp, open(tmp, 'wb') as f:
-                f.write(resp.read())
-        except Exception as exc:
-            print('  %-30s не скачался: %s' % (name, exc))
-            continue
-        n = extract(tmp, stem)
-        os.remove(tmp)
-        print('  %-30s %-10s locale-файлов: %d' % (name, rel['version'], n))
-    return 0
-
-
 def main(argv):
     parser = argparse.ArgumentParser(add_help=True)
-    parser.add_argument('--download', action='store_true',
-                        help='доскачать недостающие моды с портала')
     parser.add_argument('--list', action='store_true',
                         help='только отчёт, ничего не менять')
     args = parser.parse_args(argv)
@@ -154,11 +108,12 @@ def main(argv):
     for d in missing:
         print('   нет исходника: %s' % d)
 
-    if missing and args.download:
-        print('\nСкачиваю с портала:')
-        return download(missing)
-    if missing and not args.list:
-        print('\nДоскачать: python3 tools/sources.py --download')
+    if missing:
+        print()
+        print('Поставьте недостающие через игру: Моды -> Установить, найти по')
+        print('имени, поставить (включать не обязательно). Потом запустите скрипт')
+        print('снова. Качать с портала он не умеет: страницы загрузки закрыты')
+        print('Cloudflare — 403 любому клиенту, кроме браузера и самой игры.')
     return 0
 
 
