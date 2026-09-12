@@ -17,3 +17,6 @@ source-en/*
 
 # Сборка генерирует его из шаблона и listing.json при каждом build.
 reference/PORTAL-LISTING-FULL.md
+
+# Страница со ссылками на загрузку — генерируется tools/sources.py --links
+dist/download-mods.html
